@@ -1,0 +1,99 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+    {% load rbac %}
+    {% load url %}
+    {#    {% if request|has_permission:'depart_add' %}#}
+    {% if 'depart_add' in request.session.sadasdasdsd %}
+
+        <a href="{% reverse_url request 'depart_add' %}" class="btn btn-primary" style="margin: 5px"><i
+                class="fa fa-plus-square-o fa-fw"
+                aria-hidden="true"></i>添加</a>
+
+    {% endif %}
+    <form action="" method="get">
+        <input type="text" name="query">
+        <button>搜索</button>
+    </form>
+
+    <table class="table table-bordered table-hover">
+        <thead>
+        <tr>
+            <th>序号</th>
+            <th>名称</th>
+            {% if request|has_permission:'depart_edit' or request|has_permission:'depart_del' %}
+                <th>操作</th>
+            {% endif %}
+
+        </tr>
+        </thead>
+        <tbody>
+        {% for depart in all_depart %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ depart.title }}</td>
+                {% if request|has_permission:'depart_edit' or request|has_permission:'depart_del' %}
+
+                    <td>{% if request|has_permission:'depart_edit' %}
+                        <a href="{% reverse_url request 'depart_edit' depart.pk %}"><i
+                                class="fa fa-pencil-square-o fa-fw"
+                                aria-hidden="true"></i></a>
+                    {% endif %}
+                        {% if request|has_permission:'depart_del' %}
+                            <i del_id={{ depart.pk }} class="fa fa-trash-o fa-fw"
+                            aria-hidden="true"></i>
+                        {% endif %}
+                    </td>
+                {% endif %}
+            </tr>
+
+        {% endfor %}
+
+        </tbody>
+    </table>
+    <nav aria-label="Page navigation">
+        <ul class="pagination">
+            {#            {% for num in total_page_num %}#}
+            {#                <li><a href="/crm/depart/list/?page={{ num }}">{{ num }}</a></li>#}
+            {#            {% endfor %}#}
+            {{ page_html|safe }}
+
+
+        </ul>
+    </nav>
+
+{% endblock %}
+
+{% block js %}
+    <script>
+
+        $('.fa-trash-o').click(
+            function () {
+                swal({
+                    title: "是否删除?",
+                    text: "Once deleted, you will not be able to recover this imaginary file!",
+                    icon: "warning",
+                    buttons: true,
+                    dangerMode: true,
+                })
+                    .then((willDelete) => {
+                        if (willDelete) {
+                            var del_id = $(this).attr('del_id');
+                            $.ajax({
+                                url: '/crm/depart/del/' + del_id,
+                                method: 'get',
+                            });
+                            console.log(1111, $(this));
+                            $(this).parent().parent().remove();
+                            swal("Poof! Your imaginary file has been deleted!", {
+                                icon: "success",
+                            });
+                        } else {
+                            swal("Your imaginary file is safe!");
+                        }
+                    });
+            }
+        )
+
+    </script>
+{% endblock %}

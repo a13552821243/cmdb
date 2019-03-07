@@ -1,0 +1,57 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+    <a href="{% url 'class_add' %}" class="btn btn-primary" style="margin: 5px"><i class="fa fa-plus-square-o fa-fw"
+
+                                                                                   aria-hidden="true"></i>添加</a>
+    <form action="" method="get">
+        <input type="text" name="query">
+        <button>搜索</button>
+    </form>
+    <table class="table table-bordered table-hover">
+        <thead>
+        <tr>
+            <th>序号</th>
+            <th>班级</th>
+            <th>学费</th>
+            <th>开班日期</th>
+            <th>结业日期</th>
+            <th>班主任</th>
+            <th>任课老师</th>
+            <th>说明</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for classes in all_classes %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ classes.name }}</td>
+                <td> {{ classes.price }}</td>
+                <td> {{ classes.start_date }}</td>
+                <td> {{ classes.graduate_date }}</td>
+                <td> {{ classes.tutor.name }}</td>
+                <td> {{ classes.show_teachers }}</td>
+                <td> {{ classes.memo }}</td>
+                <td>
+                    <a href="{% url 'class_edit' classes.pk %}"><i class="fa fa-pencil-square-o fa-fw"
+                                                                   aria-hidden="true"></i></a>
+                    <a href=""><i class="fa fa-trash-o fa-fw" aria-hidden="true"></i></a>
+
+                </td>
+            </tr>
+
+        {% endfor %}
+
+        </tbody>
+    </table>
+    <nav aria-label="Page navigation">
+        <ul class="pagination">
+
+            {{ page_html|safe }}
+
+
+        </ul>
+    </nav>
+
+{% endblock %}
